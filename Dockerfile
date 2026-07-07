@@ -53,22 +53,32 @@ RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
 # Install Claude Code CLI
 #RUN npm install -g @anthropic-ai/claude-code
 
-# Remove default ubunutu user to free up uid 1000
-RUN userdel -r ubuntu
+# Create the sandbox user with a configurable name / uid / gid so files created
+# in the container land on the host owned by the invoking user. These are
+# supplied by `asb build` (defaults match a typical first user).
+ARG USERNAME=agent
+ARG UID=1000
+ARG GID=1000
 
-# Create non-root user for running Claude Code
-#RUN useradd -m -s /bin/bash claude
-# Create a new group and user with specific IDs
-RUN groupadd -r claude -g 1000 && useradd -r -g claude -u 1000 -m -s /bin/bash claude
+# Free the target uid/gid if the base image already occupies them (ubuntu:24.04
+# ships an `ubuntu` user at uid 1000), then create our user. Idempotent-ish.
+RUN set -eux; \
+    if getent passwd "${UID}" >/dev/null; then \
+        userdel -r "$(getent passwd "${UID}" | cut -d: -f1)" 2>/dev/null || true; \
+    fi; \
+    if ! getent group "${GID}" >/dev/null; then \
+        groupadd -g "${GID}" "${USERNAME}"; \
+    fi; \
+    useradd -m -u "${UID}" -g "${GID}" -s /bin/bash "${USERNAME}"
 
 # Set working directory
-WORKDIR /home/claude/workspace
+WORKDIR /home/${USERNAME}/workspace
 
 # Switch to non-root user
-USER claude
+USER ${USERNAME}
 
 # Set up a basic shell environment
-ENV HOME=/home/claude
+ENV HOME=/home/${USERNAME}
 ENV PATH="${HOME}/.npm-global/bin:${PATH}"
 
 # Add to Dockerfile before CMD

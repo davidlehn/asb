@@ -1,3 +1,0 @@
-#!/bin/env sh
-# Build the image
-docker build -t claude-code-sandbox . --no-cache
