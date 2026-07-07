@@ -81,10 +81,4 @@ USER ${USERNAME}
 ENV HOME=/home/${USERNAME}
 ENV PATH="${HOME}/.npm-global/bin:${PATH}"
 
-# Add to Dockerfile before CMD
-#USER root
-#COPY entrypoint.sh /entrypoint.sh
-#RUN chmod +x /entrypoint.sh
-#ENTRYPOINT ["/entrypoint.sh"]
-
 CMD ["/bin/bash"]
