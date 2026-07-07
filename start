@@ -1,0 +1,16 @@
+#!/bin/env sh
+
+docker run -itd --rm \
+  -p 5173-5177:5173-5177 \
+  -p 9323:9323 \
+  --name claude-dev \
+  --cpus=4 \
+  --memory=16g \
+  --tmpfs /tmp:rw,noexec \
+  -v $(pwd)/home:/home/claude:rw \
+  claude-code-sandbox
+
+#  --network none \              # Blocks all network except API (if needed)
+#  --read-only \
+#  -e ANTHROPIC_API_KEY=$ANTHROPIC_API_KEY \
+#  --user $(id -u):$(id -g) \
