@@ -116,11 +116,20 @@ build_run_args() {
     RUN_ARGS+=(-v "${ASB_WORKSPACE}:${ASB_WORKSPACE_TARGET}:rw")
   fi
 
-  # Ports
+  # Ports. A bare spec ("9323", "5173-5177") would make docker pick a random
+  # host port, so mirror it as host:container to keep the numbers identical.
+  # Anything already containing a colon (host:container, ip:host:container) is
+  # passed through untouched.
   if [ -n "$ASB_PORTS" ]; then
     local IFS=,
     for p in $ASB_PORTS; do
-      [ -n "$p" ] && RUN_ARGS+=(-p "$p")
+      [ -n "$p" ] || continue
+      case "$p" in
+        *:*) ;;                       # explicit mapping - leave as-is
+        */*) p="${p%/*}:$p" ;;        # "9323/udp" -> "9323:9323/udp"
+        *)   p="$p:$p" ;;             # "9323"     -> "9323:9323"
+      esac
+      RUN_ARGS+=(-p "$p")
     done
   fi
 

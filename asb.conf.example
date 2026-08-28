@@ -26,6 +26,8 @@
 
 # --- Networking / ports --------------------------------------------------
 # Published ports, comma-separated (ranges ok). Empty = publish nothing.
+# A bare port/range is published on the *same* host port (9323 -> 9323:9323);
+# write host:container explicitly to remap (e.g. 8080:80, 127.0.0.1:9323:9323).
 # : "${ASB_PORTS:=5173-5177,9323}"
 # Network mode: bridge (default) | none (no network) | <custom network name>.
 # : "${ASB_NETWORK:=bridge}"

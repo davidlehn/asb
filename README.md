@@ -50,7 +50,7 @@ Run `asb config` to see the effective values. Key ones:
 | `ASB_USER`      | `agent`            | in-container username / HOME (`/home/<user>`) |
 | `ASB_HOME`      | `<asb dir>/home`   | host dir bind-mounted as HOME (the writable surface) |
 | `ASB_WORKSPACE` | *(none)*           | optional second host mount |
-| `ASB_PORTS`     | *(none)*           | published ports, comma list, e.g. `5173-5177,9323` |
+| `ASB_PORTS`     | *(none)*           | published ports, comma list, e.g. `5173-5177,9323` - a bare port/range keeps the same number on the host; use `host:container` to remap |
 | `ASB_NETWORK`   | `bridge`           | `bridge` \| `none` \| custom network |
 | `ASB_CPUS` / `ASB_MEMORY` / `ASB_PIDS_LIMIT` | `4` / `16g` / `2048` | resource caps |
 | `ASB_READONLY` | `0` | `1` = read-only root filesystem |
